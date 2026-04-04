@@ -602,15 +602,22 @@ async function onAutoChange() {
 }
 
 // ── 슬라이더 변경 ─────────────────────────────────
+let ledWriteTimer = null;
+
 async function onSliderChange(val) {
   val = parseInt(val);
   updateSlider(val);
   updateGlow(val);
 
-  // BLE 전송
-  if (ledChar && !autoMode) {
-    await ledChar.writeValue(new Uint8Array([val]));
-  }
+  // 100ms 내에 연속 호출 시 마지막 값만 전송
+  if (ledWriteTimer) clearTimeout(ledWriteTimer);
+  ledWriteTimer = setTimeout(async () => {
+    if (ledChar && !autoMode) {
+      try {
+        await ledChar.writeValue(new Uint8Array([val]));
+      } catch(e) {}
+    }
+  }, 100);
 }
 
 // ── 슬라이더 progress 초기화 ──────────────────────
