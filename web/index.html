@@ -43,17 +43,18 @@
   /* ── 조명 glow 효과 (상단) ── */
   .light-source {
     position: fixed;
-    top: -120px;
+    top: -60px;
     left: 50%;
     transform: translateX(-50%);
-    width: 600px;
-    height: 300px;
+    width: 900px;
+    height: 500px;
     border-radius: 50%;
     background: radial-gradient(
       ellipse at center top,
-      rgba(var(--glow-color), 0.9) 0%,
-      rgba(var(--glow-color), 0.4) 40%,
-      rgba(var(--glow-color), 0) 70%
+      rgba(var(--glow-color), 1) 0%,
+      rgba(var(--glow-color), 0.7) 30%,
+      rgba(var(--glow-color), 0.3) 55%,
+      rgba(var(--glow-color), 0) 75%
     );
     filter: blur(20px);
     opacity: 0;
