@@ -507,38 +507,40 @@ function setConnected(val) {
 }
 
 // ── 센서 데이터 수신 ──────────────────────────────
+let rawBuffer = '';
+
 function onSensorData(event) {
-  console.log('데이터 수신!');  // ← 추가
   const decoder = new TextDecoder();
-  const raw = decoder.decode(event.target.value);
-  console.log('raw:', raw);  // ← 추가
-  try {
-    const data = JSON.parse(raw);
-    currentLightVal = data.light;
+  rawBuffer += decoder.decode(event.target.value);
+  
+  // } 로 끝나면 완전한 JSON
+  if (rawBuffer.includes('}')) {
+    try {
+      const data = JSON.parse(rawBuffer);
+      rawBuffer = '';
+      
+      currentLightVal = data.light;
+      document.getElementById('lightValue').textContent = data.light;
+      document.getElementById('lightStatus').textContent = data.status;
+      updateBackground(data.light);
 
-    document.getElementById('lightValue').textContent = data.light;
-    document.getElementById('lightStatus').textContent = data.status;
+      if (autoMode) {
+        const brightness = Math.min(255, Math.max(0,
+          Math.round((data.light - 80) / (500 - 80) * 255)
+        ));
+        currentBrightness = brightness;
+        updateGlow(brightness);
+        updateSlider(brightness);
+      }
 
-    // 배경 업데이트 (항상)
-    updateBackground(data.light);
-
-    // 자동 모드일 때 glow도 업데이트
-    if (autoMode) {
-      const brightness = Math.min(255, Math.max(0,
-        Math.round((data.light - 80) / (500 - 80) * 255)
+      const pct = Math.min(100, Math.max(0,
+        (data.light - 80) / (500 - 80) * 100
       ));
-      currentBrightness = brightness;
-      updateGlow(brightness);
-      updateSlider(brightness);
+      document.getElementById('lightBar').style.width = pct + '%';
+    } catch(e) {
+      rawBuffer = '';
     }
-
-    // 조도 바 업데이트
-    const pct = Math.min(100, Math.max(0,
-      (data.light - 80) / (500 - 80) * 100
-    ));
-    document.getElementById('lightBar').style.width = pct + '%';
-
-  } catch(e) {}
+  }
 }
 
 // ── 배경색 업데이트 (조도값 → 어두움/밝음) ───────
