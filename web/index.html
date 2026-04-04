@@ -466,6 +466,7 @@ async function toggleConnect() {
     const sensorChar = await service.getCharacteristic(SENSOR_UUID);
     await sensorChar.startNotifications();
     sensorChar.addEventListener('characteristicvaluechanged', onSensorData);
+    console.log('Notify 구독 완료');  // ← 추가
 
     // LED, AUTO — Write용 저장
     ledChar  = await service.getCharacteristic(LED_UUID);
@@ -507,6 +508,7 @@ function setConnected(val) {
 
 // ── 센서 데이터 수신 ──────────────────────────────
 function onSensorData(event) {
+  console.log('데이터 수신!');  // ← 추가
   const decoder = new TextDecoder();
   const raw = decoder.decode(event.target.value);
   try {
