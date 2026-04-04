@@ -511,6 +511,7 @@ function onSensorData(event) {
   console.log('데이터 수신!');  // ← 추가
   const decoder = new TextDecoder();
   const raw = decoder.decode(event.target.value);
+  console.log('raw:', raw);  // ← 추가
   try {
     const data = JSON.parse(raw);
     currentLightVal = data.light;
