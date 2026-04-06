@@ -455,8 +455,7 @@ async function toggleConnect() {
   }
   try {
     bleDevice = await navigator.bluetooth.requestDevice({
-      filters: [{ name: 'NU40-LIGHT' }],
-      optionalServices: [SERVICE_UUID]
+      filters: [{ services: [SERVICE_UUID] }]
     });
     bleDevice.addEventListener('gattserverdisconnected', onDisconnected);
 
